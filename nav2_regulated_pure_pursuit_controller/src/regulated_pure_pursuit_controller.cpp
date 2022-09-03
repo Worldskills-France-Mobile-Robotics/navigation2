@@ -107,8 +107,9 @@ void CustomRegulatedPurePursuitController::configure(
     node, plugin_name_ + ".allow_reversing", rclcpp::ParameterValue(false));
 
   node->get_parameter(plugin_name_ + ".desired_linear_vel", desired_linear_vel_);
-  node->get_parameter(plugin_name_ + ".max_linear_accel", max_linear_accel_);
   base_desired_linear_vel_ = desired_linear_vel_;
+  node->get_parameter(plugin_name_ + ".max_linear_accel", max_linear_accel_);
+  RCLCPP_INFO(logger_, "Linear accel: %f", max_linear_accel_);
   node->get_parameter(plugin_name_ + ".lookahead_dist", lookahead_dist_);
   node->get_parameter(plugin_name_ + ".min_lookahead_dist", min_lookahead_dist_);
   node->get_parameter(plugin_name_ + ".max_lookahead_dist", max_lookahead_dist_);
@@ -533,8 +534,8 @@ void CustomRegulatedPurePursuitController::applyConstraints(
   linear_vel = sign * linear_vel;
 
   const double & dt = control_duration_;
-  const double min_feasible_linear_speed = curr_speed.linear.x - max_angular_accel_ * dt;
-  const double max_feasible_linear_speed = curr_speed.linear.x + max_angular_accel_ * dt;
+  const double min_feasible_linear_speed = curr_speed.linear.x - max_linear_accel_ * dt;
+  const double max_feasible_linear_speed = curr_speed.linear.x + max_linear_accel_ * dt;
   linear_vel = std::clamp(linear_vel, min_feasible_linear_speed, max_feasible_linear_speed);
 }
 
