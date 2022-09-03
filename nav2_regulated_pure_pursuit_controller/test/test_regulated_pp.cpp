@@ -33,11 +33,11 @@ public:
 };
 RclCppFixture g_rclcppfixture;
 
-class BasicAPIRPP : public nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController
+class BasicAPIRPP : public nav2_regulated_pure_pursuit_controller::CustomRegulatedPurePursuitController
 {
 public:
   BasicAPIRPP()
-  : nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController() {}
+  : nav2_regulated_pure_pursuit_controller::CustomRegulatedPurePursuitController() {}
 
   nav_msgs::msg::Path getPlan() {return global_plan_;}
 

@@ -33,21 +33,21 @@ namespace nav2_regulated_pure_pursuit_controller
 {
 
 /**
- * @class nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController
+ * @class nav2_regulated_pure_pursuit_controller::CustomRegulatedPurePursuitController
  * @brief Regulated pure pursuit controller plugin
  */
-class RegulatedPurePursuitController : public nav2_core::Controller
+class CustomRegulatedPurePursuitController : public nav2_core::Controller
 {
 public:
   /**
-   * @brief Constructor for nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController
+   * @brief Constructor for nav2_regulated_pure_pursuit_controller::CustomRegulatedPurePursuitController
    */
-  RegulatedPurePursuitController() = default;
+  CustomRegulatedPurePursuitController() = default;
 
   /**
-   * @brief Destrructor for nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController
+   * @brief Destrructor for nav2_regulated_pure_pursuit_controller::CustomRegulatedPurePursuitController
    */
-  ~RegulatedPurePursuitController() override = default;
+  ~CustomRegulatedPurePursuitController() override = default;
 
   /**
    * @brief Configure controller state machine
@@ -232,7 +232,7 @@ protected:
   std::string plugin_name_;
   std::shared_ptr<nav2_costmap_2d::Costmap2DROS> costmap_ros_;
   nav2_costmap_2d::Costmap2D * costmap_;
-  rclcpp::Logger logger_ {rclcpp::get_logger("RegulatedPurePursuitController")};
+  rclcpp::Logger logger_ {rclcpp::get_logger("CustomRegulatedPurePursuitController")};
   rclcpp::Clock::SharedPtr clock_;
 
   double desired_linear_vel_, base_desired_linear_vel_;
