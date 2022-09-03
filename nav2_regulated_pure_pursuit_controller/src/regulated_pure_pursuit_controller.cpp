@@ -308,6 +308,11 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
 
     // Apply curvature to angular velocity after constraining linear velocity
     angular_vel = linear_vel * curvature;
+
+    const double & dt = control_duration_;
+    const double min_feasible_angular_speed = speed.angular.z - max_angular_accel_ * dt;
+    const double max_feasible_angular_speed = speed.angular.z + max_angular_accel_ * dt;
+    angular_vel = std::clamp(angular_vel, min_feasible_angular_speed, max_feasible_angular_speed);
   }
 
   // Collision checking on this velocity heading
