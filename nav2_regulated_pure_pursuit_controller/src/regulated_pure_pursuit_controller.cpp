@@ -381,12 +381,19 @@ void RegulatedPurePursuitController::rotateToHeading(
   // Rotate in place using max angular velocity / acceleration possible
   linear_vel = 0.0;
   const double sign = angle_to_path > 0.0 ? 1.0 : -1.0;
-  angular_vel = sign * rotate_to_heading_angular_vel_;
+  // angular_vel = fabs(angle_to_path) > approach_velocity_scaling_dist_ ? sign * rotate_to_heading_angular_vel_ : sign * 0.2;
+  angular_vel = fabs(angle_to_path) > rotate_to_heading_angular_vel_ / 3.0 ? sign * rotate_to_heading_angular_vel_ : sign * rotate_to_heading_angular_vel_ / 10;
 
   const double & dt = control_duration_;
   const double min_feasible_angular_speed = curr_speed.angular.z - max_angular_accel_ * dt;
   const double max_feasible_angular_speed = curr_speed.angular.z + max_angular_accel_ * dt;
   angular_vel = std::clamp(angular_vel, min_feasible_angular_speed, max_feasible_angular_speed);
+
+  RCLCPP_DEBUG(
+    logger_, "angle_to_path: %f, angular_speed: %f, min: %f",
+    angle_to_path, angular_vel, min_feasible_angular_speed
+  );
+
 }
 
 geometry_msgs::msg::Point RegulatedPurePursuitController::circleSegmentIntersection(
