@@ -73,6 +73,10 @@ void RegulatedPurePursuitController::configure(
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".rotate_to_heading_angular_vel", rclcpp::ParameterValue(1.8));
   declare_parameter_if_not_declared(
+    node, plugin_name_ + ".approach_angular_velocity", rclcpp::ParameterValue(0.18));
+  declare_parameter_if_not_declared(
+    node, plugin_name_ + ".approach_delta_angle", rclcpp::ParameterValue(0.30));
+  declare_parameter_if_not_declared(
     node, plugin_name_ + ".transform_tolerance", rclcpp::ParameterValue(0.1));
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".use_velocity_scaled_lookahead_dist",
@@ -124,6 +128,12 @@ void RegulatedPurePursuitController::configure(
   node->get_parameter(
     plugin_name_ + ".rotate_to_heading_angular_vel",
     rotate_to_heading_angular_vel_);
+  node->get_parameter(
+    plugin_name_ + ".approach_angular_velocity",
+    approach_angular_velocity_);
+  node->get_parameter(
+    plugin_name_ + ".approach_delta_angle",
+    approach_delta_angle_);
   node->get_parameter(plugin_name_ + ".transform_tolerance", transform_tolerance);
   node->get_parameter(
     plugin_name_ + ".use_velocity_scaled_lookahead_dist",
@@ -381,8 +391,7 @@ void RegulatedPurePursuitController::rotateToHeading(
   // Rotate in place using max angular velocity / acceleration possible
   linear_vel = 0.0;
   const double sign = angle_to_path > 0.0 ? 1.0 : -1.0;
-  // angular_vel = fabs(angle_to_path) > approach_velocity_scaling_dist_ ? sign * rotate_to_heading_angular_vel_ : sign * 0.2;
-  angular_vel = fabs(angle_to_path) > rotate_to_heading_angular_vel_ / 3.0 ? sign * rotate_to_heading_angular_vel_ : sign * rotate_to_heading_angular_vel_ / 10;
+  angular_vel = fabs(angle_to_path) > approach_delta_angle_ ? sign * rotate_to_heading_angular_vel_ : sign * approach_angular_velocity_;
 
   const double & dt = control_duration_;
   const double min_feasible_angular_speed = curr_speed.angular.z - max_angular_accel_ * dt;

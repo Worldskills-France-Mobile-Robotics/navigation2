@@ -283,6 +283,8 @@ protected:
   double desired_linear_vel_, base_desired_linear_vel_;
   double lookahead_dist_;
   double rotate_to_heading_angular_vel_;
+  double approach_angular_velocity_;
+  double approach_delta_angle_;
   double max_lookahead_dist_;
   double min_lookahead_dist_;
   double lookahead_time_;
