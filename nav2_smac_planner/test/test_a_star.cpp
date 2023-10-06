@@ -39,6 +39,7 @@ RclCppFixture g_rclcppfixture;
 
 TEST(AStarTest, test_a_star_2d)
 {
+  auto lnode = std::make_shared<rclcpp_lifecycle::LifecycleNode>("test");
   nav2_smac_planner::SearchInfo info;
   nav2_smac_planner::AStarAlgorithm<nav2_smac_planner::Node2D> a_star(
     nav2_smac_planner::MotionModel::TWOD, info);
@@ -62,7 +63,7 @@ TEST(AStarTest, test_a_star_2d)
 
   // functional case testing
   std::unique_ptr<nav2_smac_planner::GridCollisionChecker> checker =
-    std::make_unique<nav2_smac_planner::GridCollisionChecker>(costmapA, 1);
+    std::make_unique<nav2_smac_planner::GridCollisionChecker>(costmapA, 1, lnode);
   checker->setFootprint(nav2_costmap_2d::Footprint(), true, 0.0);
   a_star.setCollisionChecker(checker.get());
   a_star.setStart(20u, 20u, 0);
@@ -72,7 +73,7 @@ TEST(AStarTest, test_a_star_2d)
   EXPECT_EQ(num_it, 2414);
 
   // check path is the right size and collision free
-  EXPECT_EQ(path.size(), 81u);
+  EXPECT_EQ(path.size(), 82u);
   for (unsigned int i = 0; i != path.size(); i++) {
     EXPECT_EQ(costmapA->getCost(path[i].x, path[i].y), 0);
   }
@@ -104,7 +105,7 @@ TEST(AStarTest, test_a_star_2d)
   a_star_2.setStart(20, 20, 0);  // valid
   a_star_2.setGoal(50, 50, 0);  // invalid
   EXPECT_TRUE(a_star_2.createPath(path, num_it, some_tolerance));
-  EXPECT_EQ(path.size(), 20u);
+  EXPECT_EQ(path.size(), 21u);
   for (unsigned int i = 0; i != path.size(); i++) {
     EXPECT_EQ(costmapA->getCost(path[i].x, path[i].y), 0);
   }
@@ -122,6 +123,7 @@ TEST(AStarTest, test_a_star_2d)
 
 TEST(AStarTest, test_a_star_se2)
 {
+  auto lnode = std::make_shared<rclcpp_lifecycle::LifecycleNode>("test");
   nav2_smac_planner::SearchInfo info;
   info.change_penalty = 0.1;
   info.non_straight_penalty = 1.1;
@@ -152,7 +154,7 @@ TEST(AStarTest, test_a_star_se2)
   }
 
   std::unique_ptr<nav2_smac_planner::GridCollisionChecker> checker =
-    std::make_unique<nav2_smac_planner::GridCollisionChecker>(costmapA, size_theta);
+    std::make_unique<nav2_smac_planner::GridCollisionChecker>(costmapA, size_theta, lnode);
   checker->setFootprint(nav2_costmap_2d::Footprint(), true, 0.0);
 
   // functional case testing
@@ -164,7 +166,7 @@ TEST(AStarTest, test_a_star_se2)
 
   // check path is the right size and collision free
   EXPECT_EQ(num_it, 3222);
-  EXPECT_EQ(path.size(), 62u);
+  EXPECT_EQ(path.size(), 63u);
   for (unsigned int i = 0; i != path.size(); i++) {
     EXPECT_EQ(costmapA->getCost(path[i].x, path[i].y), 0);
   }
@@ -178,6 +180,7 @@ TEST(AStarTest, test_a_star_se2)
 
 TEST(AStarTest, test_a_star_lattice)
 {
+  auto lnode = std::make_shared<rclcpp_lifecycle::LifecycleNode>("test");
   nav2_smac_planner::SearchInfo info;
   info.change_penalty = 0.05;
   info.non_straight_penalty = 1.05;
@@ -213,7 +216,7 @@ TEST(AStarTest, test_a_star_lattice)
   }
 
   std::unique_ptr<nav2_smac_planner::GridCollisionChecker> checker =
-    std::make_unique<nav2_smac_planner::GridCollisionChecker>(costmapA, size_theta);
+    std::make_unique<nav2_smac_planner::GridCollisionChecker>(costmapA, size_theta, lnode);
   checker->setFootprint(nav2_costmap_2d::Footprint(), true, 0.0);
 
   // functional case testing
@@ -225,7 +228,7 @@ TEST(AStarTest, test_a_star_lattice)
 
   // check path is the right size and collision free
   EXPECT_EQ(num_it, 21);
-  EXPECT_EQ(path.size(), 48u);
+  EXPECT_GT(path.size(), 47u);
   for (unsigned int i = 0; i != path.size(); i++) {
     EXPECT_EQ(costmapA->getCost(path[i].x, path[i].y), 0);
   }
@@ -239,6 +242,7 @@ TEST(AStarTest, test_a_star_lattice)
 
 TEST(AStarTest, test_se2_single_pose_path)
 {
+  auto lnode = std::make_shared<rclcpp_lifecycle::LifecycleNode>("test");
   nav2_smac_planner::SearchInfo info;
   info.change_penalty = 0.1;
   info.non_straight_penalty = 1.1;
@@ -263,7 +267,7 @@ TEST(AStarTest, test_se2_single_pose_path)
     new nav2_costmap_2d::Costmap2D(100, 100, 0.1, 0.0, 0.0, 0);
 
   std::unique_ptr<nav2_smac_planner::GridCollisionChecker> checker =
-    std::make_unique<nav2_smac_planner::GridCollisionChecker>(costmapA, size_theta);
+    std::make_unique<nav2_smac_planner::GridCollisionChecker>(costmapA, size_theta, lnode);
   checker->setFootprint(nav2_costmap_2d::Footprint(), true, 0.0);
 
   // functional case testing

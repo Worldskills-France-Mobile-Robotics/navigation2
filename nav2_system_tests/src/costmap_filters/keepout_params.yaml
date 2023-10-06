@@ -56,6 +56,7 @@ bt_navigator:
     - nav2_follow_path_action_bt_node
     - nav2_spin_action_bt_node
     - nav2_wait_action_bt_node
+    - nav2_assisted_teleop_action_bt_node
     - nav2_back_up_action_bt_node
     - nav2_drive_on_heading_bt_node
     - nav2_clear_costmap_service_bt_node
@@ -88,6 +89,7 @@ bt_navigator:
     - nav2_wait_cancel_bt_node
     - nav2_spin_cancel_bt_node
     - nav2_back_up_cancel_bt_node
+    - nav2_assisted_teleop_cancel_bt_node
     - nav2_drive_on_heading_cancel_bt_node
 
 bt_navigator_navigate_through_poses_rclcpp_node:
@@ -125,6 +127,7 @@ controller_server:
       plugin: "dwb_core::DWBLocalPlanner"
       debug_trajectory_details: True
       prune_distance: 1.0
+      forward_prune_distance: 1.0
       min_vel_x: 0.0
       min_vel_y: 0.0
       max_vel_x: 0.26
