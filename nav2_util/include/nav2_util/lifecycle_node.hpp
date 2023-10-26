@@ -47,7 +47,23 @@ public:
     const std::string & node_name,
     const std::string & ns = "",
     const rclcpp::NodeOptions & options = rclcpp::NodeOptions());
+
+  /**
+   * @brief A lifecycle node constructor
+   * @param node_name Name for the node
+   * @param namespace Namespace for the node, if any
+   * @param use_rclcpp_node Whether to create an internal client node
+   * @param options Node options
+   */
+  LifecycleNode(
+    const std::string & node_name,
+    const std::string & ns,
+    bool use_rclcpp_node,
+    const rclcpp::NodeOptions & options = rclcpp::NodeOptions());
+
   virtual ~LifecycleNode();
+
+
 
   typedef struct
   {
@@ -202,6 +218,16 @@ protected:
    * Run some common cleanup steps shared between rcl preshutdown and destruction.
    */
   void runCleanups();
+
+  // Whether or not to create a local rclcpp::Node which can be used for ROS2 classes that don't
+  // yet support lifecycle nodes
+  bool use_rclcpp_node_;
+
+  // The local node
+  rclcpp::Node::SharedPtr rclcpp_node_;
+
+  // When creating a local node, this class will launch a separate thread created to spin the node
+  std::unique_ptr<NodeThread> rclcpp_thread_;
 
   // Connection to tell that server is still up
   std::unique_ptr<bond::Bond> bond_{nullptr};

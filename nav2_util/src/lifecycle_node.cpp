@@ -40,6 +40,33 @@ LifecycleNode::LifecycleNode(
   register_rcl_preshutdown_callback();
 }
 
+LifecycleNode::LifecycleNode(
+  const std::string & node_name,
+  const std::string & ns, bool use_rclcpp_node,
+  const rclcpp::NodeOptions & options)
+: rclcpp_lifecycle::LifecycleNode(node_name, ns, options),
+  use_rclcpp_node_(use_rclcpp_node)
+{
+  // server side never times out from lifecycle manager
+  this->declare_parameter(bond::msg::Constants::DISABLE_HEARTBEAT_TIMEOUT_PARAM, true);
+  this->set_parameter(
+    rclcpp::Parameter(
+      bond::msg::Constants::DISABLE_HEARTBEAT_TIMEOUT_PARAM, true));
+
+  if (use_rclcpp_node_) {
+    std::vector<std::string> new_args = options.arguments();
+    new_args.push_back("--ros-args");
+    new_args.push_back("-r");
+    new_args.push_back(std::string("__node:=") + this->get_name() + "_rclcpp_node");
+    new_args.push_back("--");
+    rclcpp_node_ = std::make_shared<rclcpp::Node>(
+      "_", ns, rclcpp::NodeOptions(options).arguments(new_args));
+    rclcpp_thread_ = std::make_unique<NodeThread>(rclcpp_node_);
+  }
+
+  printLifecycleNodeNotification();
+}
+
 LifecycleNode::~LifecycleNode()
 {
   RCLCPP_INFO(get_logger(), "Destroying");
