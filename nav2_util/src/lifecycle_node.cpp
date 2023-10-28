@@ -65,6 +65,8 @@ LifecycleNode::LifecycleNode(
   }
 
   printLifecycleNodeNotification();
+
+  register_rcl_preshutdown_callback();
 }
 
 LifecycleNode::~LifecycleNode()
